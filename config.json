@@ -1,0 +1,12 @@
+{
+    "bot_token" : ""
+    ,"systems_token" :""
+    ,"group_id" : 1001180
+    ,"max_rank" : 6
+    ,"max_experience_give" : 1000
+    ,"max_experience_take" : 1000
+    ,"guild_id" : "647336915380600833"
+    ,"guild_role" : "806964556743442432"
+    ,"max_users_view" : 2
+    ,"experience_name" : "Might"
+}
