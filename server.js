@@ -1,8 +1,10 @@
 const express = require("express")
 const bodyParser = require('body-parser')
+const config = require('./config.json')
 import { DiscordClient } from "./discord-client";
 import { BloxyClient } from "./bloxy-client";
 import { RobloxClient } from "./roblox-client";
+import { Profile } from "./profile";
 
 class WebServer {
     app;
@@ -42,10 +44,15 @@ class WebServer {
 
         this.app.get("/getuser/:user", async (req, res) => {
             const { user } = req.params;
-            const id = Number(user)
-            const userProfile = await this.retrieve(id)
-            const data = await GetFullProfile(userProfile)
-            res.json(data)
+            const userId = Number(user)
+            const userProfile = await this.findUser(userId)
+
+            if (!userProfile) {
+                // handle how you want to respond when there's no user in cache
+            }
+
+            // can adjust response here if needed too
+            res.json(userProfile)
         })
 
         this.app.post("/update", async(req,res) => {
@@ -55,117 +62,58 @@ class WebServer {
 
             for (user of users) {
                 const profile = await this.findOrCreateUserProfile(+user)
-                const dis = {
+                const response = {
                     userId: profile.userId, 
                     data: []
                 };
 
-                if (type == 'add') {
-                    const data = await addXP(profile, amount)
-                    dis.data.push(data)
-                } else if (type == 'remove') {
-                    const data = await removeXP(profile, amount)
-                    dis.data.push(data)
+                if (type === 'add' || type === 'remove') {
+                    await profile.mutateXP(amount)
+                    // adjust how you want response to be here
+                    // response.data.push(?)
                 } else if (type == 'ranklock') {
-                    const data = await rankLock(profile, amount)
-                    dis.data.push(data)
+                    await profile.toggleRankLock();
+                    // adjust how you want response to be here
+                    // response.data.push(?)
                 }
-                returnedData.push(dis)
+                responseData.push(response)
             }
 
-            res.json(returnedData)
+            res.json(responseData)
         })
-    }
-
-
-
-    async rankLock(value) {
-        this.profile.rankLocked = value
-        await db.SetAsync(this.profile.userId, this.profile)
-        const { currentRank, nextRank } = await getFullProfile()
-        return {
-            currentRankNew: currentRank, 
-            nextRank,
-            profile, 
-        }
-    }
-
-    async removeXP(Profile, Amount) {
-        if (Profile.RankLocked == true) {
-            var {CurrentRank, nextRank} = await GetFullProfile(Profile)
-            var CurrentRankNew = CurrentRank
-            return {CurrentRankNew, nextRank, Profile}
-        }
-        var role = await group.getMember(Profile.UserId)
-        if (role) {
-            if (role.role.rank > config.max_rank) {
-                var CurrentRank = RankProfiles[RankProfiles.length-1]
-                var CurrentRankNew = RankProfiles[RankProfiles.length-1]
-                var nextRank = RankProfiles[RankProfiles.length-1]
-                Profile.Experience = CurrentRankNew.value
-                await db.SetAsync(Profile.UserId,Profile)
-                return {CurrentRankNew, nextRank, Profile}
-            }
-        }
-        var CurrentRank
-        for (rank of RankProfiles) {
-            if (Profile.Experience < rank.value) {
-                CurrentRank = rank
-                break
-            } else {
-                continue
-            }
-        }
-        if (CurrentRank == undefined) {
-            CurrentRank = RankProfiles[RankProfiles.length-1]
-        }
-        print('crxp',CurrentRank)
-        if (Profile.Experience - Amount < 0) {
-            Profile.Experience = 0
-        } else {
-            Profile.Experience -= Amount
-        }
-        var CurrentRankNew
-        for (rank of RankProfiles) {
-            if (Profile.Experience < rank.value) {
-                CurrentRankNew = rank
-                break
-            } else {
-                continue
-            }
-        }
-        print('crxpnew',CurrentRankNew)
-        var nextRank = RankProfiles[RankProfiles.indexOf(CurrentRankNew) + 1]
-        print('crxpnext',nextRank)
-        if (CurrentRank == undefined) {
-            //prob at max, cant really promote him
-        } else { 
-            print('TEST')
-            print(CurrentRankNew.name, CurrentRank.name)
-            if (CurrentRankNew != CurrentRank) {
-                try {
-                    await group.updateMember(Profile.UserId,CurrentRankNew.id)
-                } catch (e) {
-                    print(e)
-                }
-            }
-        }
-        await db.SetAsync(Profile.UserId,Profile)
-        return {CurrentRankNew, nextRank, Profile}
     }
 
     async findOrCreateUserProfile(userId) {
         let profile;
 
         if (userId) {
-            profile = this.profileCache.find(profile => profile.userId === userId)
+            profile = await this.findUser(userId);
         }
 
-        if (!profile || !userId) {
-            profile = await createUser(UserId)
+        if (!profile) {
+            profile = await this.createUser(userId)
         }
 
         return profile;
+    }
+
+    async findUser(userId) {
+        return this.profileCache.find(profile => profile.userId === userId);
+    }
+
+    async createUser(userId) {
+        const props = {
+            experience: 0,
+            isRankLocked: false,
+            groupId: config.group_id,
+        };
+
+        const clients = {
+            bloxyClient: this.bloxyClient,
+        };
+
+        const userProfile = new Profile(userId, props, clients)
+        this.profileCache.push(userProfile);
     }
 }
 

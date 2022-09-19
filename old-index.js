@@ -27,6 +27,8 @@ class User {
        this.UserId = UserId
     }
 }
+
+// make json
 let RankProfiles = [
     new RankProfile('Cadet', 50, 55565018),
     new RankProfile('Trooper', 100, 55565017),
