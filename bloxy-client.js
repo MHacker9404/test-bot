@@ -5,7 +5,7 @@ class BloxyClient {
     client;
     group;
 
-    constructor() {
+    constructor(config) {
         this.client = new bloxy.Client({
             credentials: {
                 cookie: config.systems_token, // use your bots' token

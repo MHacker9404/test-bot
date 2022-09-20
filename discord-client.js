@@ -1,11 +1,16 @@
 // const { Client } = require("discord.js")
-import Client from "discord.js";
+import { Client, GatewayIntentBits } from "discord.js";
 
 class DiscordClient {
     client;
+    bloxyClient;
 
-    constructor({ bloxyClient }) {
-        this.client = new Client({"partials": ['CHANNEL', 'MESSAGE', 'REACTION']})
+    constructor( bloxyClient ) {
+        this.client = new Client({
+            // "partials": ['CHANNEL', 'MESSAGE', 'REACTION']
+            intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]
+            , presence: { status: 'dnd' }
+        });
         this.bloxyClient = bloxyClient;
     }
 

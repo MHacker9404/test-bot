@@ -1,6 +1,9 @@
-const express = require("express")
-const bodyParser = require('body-parser')
-const config = require('./config.json')
+// const express = require("express")
+import express from 'express';
+// const bodyParser = require('body-parser')
+import bodyParser from 'body-parser';
+// const config = require('./config.json')
+import config from './config.json' assert { type: "json" };
 import DiscordClient from "./discord-client.js";
 import BloxyClient from "./bloxy-client.js";
 import RobloxClient from "./roblox-client.js";
@@ -20,10 +23,11 @@ class WebServer {
         }
 
         // init clients
-        this.bloxyClient = new BloxyClient();
-        this.bloxyClient.login().initGroup(config.group_id)
+        this.bloxyClient = new BloxyClient(config);
+        const authenticatedUser = this.bloxyClient.login();
+        this.bloxyClient.initGroup(config.group_id)
 
-        this.discordClient = new DiscordClient({ bloxyClient });
+        this.discordClient = new DiscordClient(this.bloxyClient);
         this.discordClient.login(config.bot_token)
 
         console.log(`Logged in as ${authenticatedUser.id}`) // --> "Logged in as X"
