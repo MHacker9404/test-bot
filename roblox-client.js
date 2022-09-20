@@ -1,4 +1,4 @@
-const { DataStoreService, InitializeAsync } = require('@mfd/rbxdatastoreservice')
+import { DataStoreService, InitializeAsync } from '@mfd/rbxdatastoreservice';
 
 class RobloxClient {
     db;
@@ -13,4 +13,5 @@ class RobloxClient {
     }
 }
 
-module.exports = { RobloxClient };
+// module.exports = { RobloxClient };
+export default RobloxClient;

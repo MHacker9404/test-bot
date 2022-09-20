@@ -1,4 +1,4 @@
-import { rankProfiles } from "./rank-profiles";
+import rankProfiles from "./rank-profiles.js";
 
 class Profile {
     clients;
@@ -53,7 +53,7 @@ class Profile {
             this.assignNextRank();
 
             try {
-                await this.group.updateMember(userId, this.rank.id)
+                this.group.updateMember(userId, this.rank.id)
             } catch (e) {
                 console.log(e)
             }
@@ -104,4 +104,4 @@ class Profile {
     }
 }
 
-export { Profile };
+export default Profile;

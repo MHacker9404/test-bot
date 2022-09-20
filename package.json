@@ -2,9 +2,10 @@
   "name": "new-tgr-bot-v3",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "main": "index.js"
+    "main": "node index.js"
   },
   "dependencies": {
     "@mfd/rbxdatastoreservice": "^1.3.1",

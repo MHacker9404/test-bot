@@ -7,4 +7,5 @@ const rankProfiles = [
     { id: 55565111, name: "Sergeant-Major", value: 300 },
 ];
 
-export { rankProfiles };
+// export { rankProfiles };
+export default rankProfiles;

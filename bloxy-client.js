@@ -1,4 +1,5 @@
-const bloxy = require('bloxy')
+// const bloxy = require('bloxy')
+import bloxy from 'bloxy';
 
 class BloxyClient {
     client;
@@ -21,4 +22,5 @@ class BloxyClient {
     }
 }
 
-module.exports = { BloxyClient };
+// module.exports = { BloxyClient };
+export default BloxyClient;

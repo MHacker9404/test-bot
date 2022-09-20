@@ -1,10 +1,10 @@
 const express = require("express")
 const bodyParser = require('body-parser')
 const config = require('./config.json')
-import { DiscordClient } from "./discord-client";
-import { BloxyClient } from "./bloxy-client";
-import { RobloxClient } from "./roblox-client";
-import { Profile } from "./profile";
+import DiscordClient from "./discord-client.js";
+import BloxyClient from "./bloxy-client.js";
+import RobloxClient from "./roblox-client.js";
+import Profile from "./profile.js";
 
 class WebServer {
     app;

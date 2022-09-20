@@ -1,4 +1,5 @@
-const { Client } = require("discord.js")
+// const { Client } = require("discord.js")
+import Client from "discord.js";
 
 class DiscordClient {
     client;
@@ -327,4 +328,5 @@ class DiscordClient {
     }
 }
 
-module.exports = { DiscordClient }
+// module.exports = { DiscordClient }
+export default DiscordClient;
